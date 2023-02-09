@@ -52,23 +52,33 @@ def A_star(board, start, end):
         #Generamos la lista de vecinos del nodo actual en base a las 4 direcciones
         #Arriba, abajo, derecha, izquierda
        neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        #Recorremos cada uno de los vecinos 
        for dx, dy in neighbors:
            x = current_node.x + dx
            y = current_node.y + dy
+            #Verificamos que estos se encuentren dentro del mapa
            if x < 0 or x >= len(board) or y < 0 or y >= len(board[0]):
                continue
+           #Tambien confirmamos que este nodo vecino no sea un obstaculo
            if board[x][y] == "X":
                continue            
+            #Calculamos el costo de g del nuevo nodo, sumando el costo del nodo actual y la distancia Manhattan desde el nodo actual hasta el vecino.
            new_g = current_node.g + manhattan_distance(current_node.x, current_node.y, x, y)
+            #Creamos un nuevo nodo con las coordenadas, el costo g calculado, una estimación h de la distancia Manhattan hasta el nodo final 
+            #y el nodo actual como su nodo padre.
            new_node = Node(x, y, new_g, manhattan_distance(x, y, end_node.x, end_node.y), current_node)
+            #Verificamos si el nuevo nodo se encuentra en la closed_list, si es así, saltamos a la siguiente iteración sin agregar el nodo a la open_list.
            if any(node == new_node for node in closed_list):
                continue
+            #Si el nuevo nodo no está en la closed_list, verificamos si se encuentra en la open_list. 
            if any(node == new_node for node in open_list):
+                 #Si es así, se actualiza el costo g y el nodo padre si es necesario.
                node = next(node for node in open_list if node == new_node)
                if new_g < node.g:
                    node.g = new_g
                    node.parent = current_node
                continue
+            #Si el nuevo nodo no esta en ninguna de las dos listas, lo agregamos a la open_list.
            open_list.append(new_node)
    return None
 
