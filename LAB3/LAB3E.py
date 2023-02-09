@@ -60,7 +60,9 @@ def A_star(board, start, end):
        neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         #Recorremos cada uno de los vecinos 
        for dx, dy in neighbors:
+            #le asignamos a x el desplazamiento en x a la cordenada del nodo actual en x
            x = current_node.x + dx
+            #le asignamos a y el desplazamiento en y a la cordenada del nodo actual en y
            y = current_node.y + dy
             #Verificamos que estos se encuentren dentro del mapa
            if x < 0 or x >= len(board) or y < 0 or y >= len(board[0]):
@@ -68,12 +70,14 @@ def A_star(board, start, end):
            #Tambien confirmamos que este nodo vecino no sea un obstaculo
            if board[x][y] == "X":
                continue            
-            #Calculamos el costo de g del nuevo nodo, sumando el costo del nodo actual y la distancia Euclidiana desde el nodo actual hasta el vecino.
+            #Calculamos el costo de g del nuevo nodo, sumando el costo del nodo actual 
+            # y la distancia Euclidiana desde el nodo actual hasta el vecino.
            new_g = current_node.g + euclidean_distance(current_node.x, current_node.y, x, y)
             #Creamos un nuevo nodo con las coordenadas, el costo g calculado, una estimación h de la distancia Euclidiana hasta el nodo final 
             #y el nodo actual como su nodo padre.
            new_node = Node(x, y, new_g, euclidean_distance(x, y, end_node.x, end_node.y), current_node)
-            #Verificamos si el nuevo nodo se encuentra en la closed_list, si es así, saltamos a la siguiente iteración sin agregar el nodo a la open_list.
+            #Verificamos si el nuevo nodo se encuentra en la closed_list, si es así, 
+            #saltamos a la siguiente iteración sin agregar el nodo a la open_list.
            if any(node == new_node for node in closed_list):
                continue
             #Si el nuevo nodo no está en la closed_list, verificamos si se encuentra en la open_list. 
@@ -110,20 +114,22 @@ board = [[' ', ' ', ' ', ' ', ' '],
 start = (1, 1)
 end = (5, 3)
 
-
-
-
-
 path = A_star(board, start, end)
-
+#Verificamos que exista el camino
 if path is not None:
+    #Recorremos las filas y las columnas del tablero
     for i in range(len(board)):
         for j in range(len(board[0])):
+            #Si la fila i y la columna j existen en el camino
             if (i, j) in path:
+                #Se imprimen por que dorman parte del camino
                 print(8, end=" ")
+                #Verificamos que esa fila y esa columna sea una X
             elif board[i][j] == "X":
+                #Si lo es, imprimimos un 0
                 print(0, end=" ")
             else:
+                #Si las condiciones no se cumple, asumimos  que la ubicación actual es un espacio vacio.
                 print(1, end=" ")
         print()
 else:
