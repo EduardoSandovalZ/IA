@@ -1,60 +1,59 @@
 # Crea un objeto que representa la figura de la reina
-REINA = "\u2655"
+queen = "\u2655"
 
-# Comprueba si la columna está disponible
-def columna_disponible(tablero, fila, columna, n):
-    for i in range(fila):
-        if tablero[i][columna] == REINA:
-            return False
-
-    # Comprueba si la diagonal superior izquierda está disponible
-    i, j = fila, columna
+#Function to verify if the position is available
+def is_available(board, row, column, n):
+    # Verifying if there's a queen in the same column
+    for i in range(row):
+        if board[i][column] == queen:
+            return False 
+    # Verifying if there's a queen in the upper left diagonal
+    i, j = row, column
     while i >= 0 and j >= 0:
-        if tablero[i][j] == REINA:
+        if board[i][j] == queen:
             return False
         i -= 1
         j -= 1
-
-    # Comprueba si la diagonal superior derecha está disponible
-    i, j = fila, columna
+    # Verifying if there's a queen in the upper right diagonal
+    i, j = row, column
     while i >= 0 and j < n:
-        if tablero[i][j] == REINA:
+        if board[i][j] == queen:
             return False
         i -= 1
         j += 1
-
     return True
 
-# Encuentra una solución mediante una búsqueda en profundidad (DFS)
-def encontrar_solucion(tablero, fila, n):
-    if fila == n:
+# Using DFS recursive function to place queens
+def place_queens(board, row, n):
+    if row == n:
         return True
-
-    for columna in range(n):
-        if columna_disponible(tablero, fila, columna, n):
-            tablero[fila][columna] = REINA
-
-            if encontrar_solucion(tablero, fila + 1, n):
+    for column in range(n):
+        if is_available(board, row, column, n):
+            board[row][column] = queen
+            # Moving to the next queen
+            if place_queens(board, row + 1, n):
                 return True
-
-            tablero[fila][columna] = 0
-
+            # If the current position doesn't lead to a solution, go back to the previous position and try the next column
+            board[row][column] = 0
     return False
 
-# Imprime el tablero
-def imprimir_tablero(tablero, n):
+#Function to print the chessboard
+def print_board(board, n):
     for i in range(n):
         for j in range(n):
-            print(tablero[i][j], end=" ")
+            print(board[i][j], end=" ")
         print()
 
-# Encuentra la solución al problema de las N reinas
-def n_reinas(n):
-    tablero = [[0] * n for _ in range(n)]
-    if encontrar_solucion(tablero, 0, n) == False:
-        print("No existe solución")
+#Function to solve the n-queens problem
+def solve_n_queens(n):
+    # Creating the chessboard of size n x n
+    board = [[0] * n for _ in range(n)]
+    # Placing the queens
+    if place_queens(board, 0, n) == False:
+        print("No solution exists")
         return False
-    imprimir_tablero(tablero, n)
+    # Printing the chessboard
+    print_board(board, n)
 
-# Parámetros de entrada
-n_reinas(4)
+# Function call with input parameter
+solve_n_queens(4)
