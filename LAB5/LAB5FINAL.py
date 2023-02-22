@@ -1,19 +1,19 @@
 import numpy as np
-import pandas as pd
 
 # Paso 1: Solicitar al usuario que ingrese los datos de los libros
-num_libros = int(input("Ingrese el número de libros que desea clasificar: "))
+
+num_libros = 20
 libros = []
 for i in range(num_libros):
-    peso = float(input(f"Ingrese el peso del libro {i+1}: "))
-    frecuencia = float(input(f"Ingrese la frecuencia de uso del libro {i+1}: "))
+    peso = np.random.uniform(0.5, 5.0)
+    frecuencia = np.random.uniform(1, 10)
     libros.append([peso, frecuencia])
 
-# Paso 2: Crear un DataFrame con los datos de los libros
-data = pd.DataFrame(libros, columns=["peso", "frecuencia"])
+# Paso 2: Crear un array con los datos de los libros
+data = np.array(libros)
 
 # Paso 3: Normalizar las características para que tengan una media de cero y una desviación estándar de uno
-X = (data - data.mean()) / data.std()
+X = (data - data.mean(axis=0)) / data.std(axis=0)
 
 # Paso 4: Definir la arquitectura de la red neuronal perceptrón
 class Perceptron:
@@ -34,21 +34,22 @@ class Perceptron:
 # Paso 5: Crear una instancia de la red neuronal perceptrón y entrenarla con los datos
 perceptron = Perceptron(input_size=2, output_size=4)
 y = np.zeros((num_libros, 4))
-for i, row in data.iterrows():
-    if row["peso"] <= 2 and row["frecuencia"] <= 5:
+for i, row in enumerate(data):
+    if row[0] <= 2 and row[1] <= 5:
         y[i][0] = 1
-    elif row["peso"] <= 2 and row["frecuencia"] > 5 and row["frecuencia"] < 10:
+    elif row[0] <= 2 and row[1] >= 5:
         y[i][1] = 1
-    elif row["peso"] > 2 and row["peso"] <= 5 and row["frecuencia"] <= 5:
+    elif row[0] > 2 and row[1] <= 5:
         y[i][2] = 1
     else:
         y[i][3] = 1
-perceptron.train(X.to_numpy(), y, epochs=100, lr=0.01)
+perceptron.train(X, y, epochs=100, lr=0.01)
 
 # Paso 6: Usar la red neuronal para clasificar los libros según su peso y frecuencia de uso
-conjuntos = perceptron.predict(X.to_numpy())
+conjuntos = perceptron.predict(X)
 
 # Paso 7: Asignar cada conjunto a los libros según su peso y frecuencia de uso
 conjuntos_nombre = {0: "Ligeros y poco usados", 1: "Ligeros y muy usados", 2: "Pesados y poco usados", 3: "Pesados y muy usados"}
 for i, conjunto in enumerate(conjuntos):
-    print(f"El libro {i+1} pertenece al conjunto '{conjuntos_nombre[conjunto]}'.")
+    print(f"El libro {i+1} con peso {data[i][0]:.2f} y frecuencia {data[i][1]:.2f} pertenece al conjunto '{conjuntos_nombre[conjunto]}'.")
+
