@@ -1,59 +1,70 @@
-# Crea un objeto que representa la figura de la reina
+# Unicode representation of the queen symbol
 queen = "\u2655"
 
-#Function to verify if the position is available
-def is_available(board, row, column, n):
-    # Verifying if there's a queen in the same column
+# Check if the position is available for placing the queen
+def is_available(board, row, col, n):
+    # Check column
     for i in range(row):
-        if board[i][column] == queen:
-            return False 
-    # Verifying if there's a queen in the upper left diagonal
-    i, j = row, column
+        if board[i][col] == queen:
+            return False
+
+    # Check upper left diagonal
+    i, j = row, col
     while i >= 0 and j >= 0:
         if board[i][j] == queen:
             return False
         i -= 1
         j -= 1
-    # Verifying if there's a queen in the upper right diagonal
-    i, j = row, column
+
+    # Check upper right diagonal
+    i, j = row, col
     while i >= 0 and j < n:
         if board[i][j] == queen:
             return False
         i -= 1
         j += 1
+
     return True
 
-# Using DFS recursive function to place queens
+# Place the queens on the board using depth-first search
 def place_queens(board, row, n):
     if row == n:
         return True
-    for column in range(n):
-        if is_available(board, row, column, n):
-            board[row][column] = queen
-            # Moving to the next queen
+
+    for col in range(n):
+        if is_available(board, row, col, n):
+            board[row][col] = queen
+
             if place_queens(board, row + 1, n):
                 return True
-            # If the current position doesn't lead to a solution, go back to the previous position and try the next column
-            board[row][column] = 0
+
+            board[row][col] = 0
+
     return False
 
-#Function to print the chessboard
+# Print the chessboard
 def print_board(board, n):
     for i in range(n):
         for j in range(n):
-            print(board[i][j], end=" ")
+            if (i + j) % 2 == 0:
+                print("\u25A1", end=" ")
+            else:
+                print("\u25A0", end=" ")
+        print()
+        for j in range(n):
+            if board[i][j] == queen:
+                print(queen, end=" ")
+            else:
+                print("\u2001", end=" ")
         print()
 
-#Function to solve the n-queens problem
+# Solve the N-Queens problem
 def solve_n_queens(n):
-    # Creating the chessboard of size n x n
     board = [[0] * n for _ in range(n)]
-    # Placing the queens
     if place_queens(board, 0, n) == False:
         print("No solution exists")
         return False
-    # Printing the chessboard
     print_board(board, n)
 
-# Function call with input parameter
+# Solve the 4-Queens problem
 solve_n_queens(4)
