@@ -83,7 +83,6 @@ X /= X.max()
 
 # Selección del caso
 caso = 1
-
 if caso == 1:
     # Caso 1: detectar dígitos pares
     y = get_labels_pares(datos)
@@ -96,7 +95,9 @@ elif caso == 3:
 else:
     print("Caso no válido")
 
+#Instanciamos nuestro perceptron
 model = Perceptron(input_size=X.shape[1], output_size=1)
+#Envontrar los errores
 errors = model.train(X, y, epochs=1000, lr=0.01)
 
 table = PrettyTable()
